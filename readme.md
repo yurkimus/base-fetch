@@ -104,7 +104,7 @@ While iterating over functions provided into `pipe` we have access to the sequen
 ```typescript
 const withPost: Pipe = (init, headers) =>
   request(new URL('posts/1', base))
-    .then(take)
+    .then(unwrap)
     .then(value => [
       init,
       new Headers([
@@ -115,7 +115,7 @@ const withPost: Pipe = (init, headers) =>
 
 const withUser: Pipe = (init, headers) =>
   request(new URL('users/1', base))
-    .then(take)
+    .then(unwrap)
     .then(value => [
       init,
       new Headers([
@@ -126,7 +126,7 @@ const withUser: Pipe = (init, headers) =>
 
 const withTodo: Pipe = (init, headers) =>
   request(new URL('todos/1', base))
-    .then(take)
+    .then(unwrap)
     .then(value => [
       init,
       new Headers([
