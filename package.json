@@ -1,0 +1,21 @@
+{
+  "type": "module",
+  "name": "base-fetch",
+  "version": "2.0.2",
+  "description": "simple javascript fetch-based wrapper",
+  "main": "destination/index.js",
+  "types": "destination/index.d.ts",
+  "scripts": {
+    "compile": "tsc"
+  },
+  "keywords": [
+    "fetch",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Yuri Ignatov <yurkimus@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}
