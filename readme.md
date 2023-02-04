@@ -2,6 +2,8 @@
 
 Requires NodeJS v17.5.0 or newer.
 
+[Github repository](https://github.com/yurkimus/base-fetch)
+
 ## Installation
 
 ```
