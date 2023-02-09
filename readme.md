@@ -95,9 +95,9 @@ request(url, { method: 'PATCH', credentials: 'include' })
 
 ### `pipe`
 
-Function that provides a way to compose foundamental requets down to one request with composed `RequestInit` at finale. Resulted request will have all `x----` headers we providing with the pipe contract.
+Function that provides a way to compose foundamental requests down to one request with composed `RequestInit` at finale. Resulted request will have all `x----` headers we providing with the pipe contract from the example.
 
-While iterating over functions provided into `pipe` we have access to the sequentially derived parameters that we can pass into the next request call or return.
+While iterating over functions provided into `pipe` we have access to the sequentially derived parameters that we can pass into the next request call on return.
 
 #### example
 
