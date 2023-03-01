@@ -95,52 +95,7 @@ request(url, { method: 'PATCH', credentials: 'include' })
 
 ### `pipe`
 
-Function that provides a way to compose foundamental requests down to one request with composed `RequestInit` at finale. Resulted request will have all `x----` headers we providing with the pipe contract from the example.
-
-While iterating over functions provided into `pipe` we have access to the sequentially derived parameters that we can pass into the next request call on return.
-
-#### example
-
-```typescript
-const withPost: Pipe = (init, headers) =>
-  request(new URL('posts/1', base))
-    .then(unwrap)
-    .then(value => [
-      init,
-      new Headers([
-        ...new Headers(headers),
-        ...new Headers([['x----post----x', JSON.stringify(value)]]),
-      ]),
-    ])
-
-const withUser: Pipe = (init, headers) =>
-  request(new URL('users/1', base))
-    .then(unwrap)
-    .then(value => [
-      init,
-      new Headers([
-        ...new Headers(headers),
-        ...new Headers([['x----user----x', JSON.stringify(value)]]),
-      ]),
-    ])
-
-const withTodo: Pipe = (init, headers) =>
-  request(new URL('todos/1', base))
-    .then(unwrap)
-    .then(value => [
-      init,
-      new Headers([
-        ...new Headers(headers),
-        ...new Headers([['x----todo----x', JSON.stringify(value)]]),
-      ]),
-    ])
-
-const pipedRequest = pipe(withPost, withUser, withTodo)
-
-const response = pipedRequest(new URL('albums/1', base))
-  .then(unwrap)
-  .then(value => console.log(value))
-```
+Will be written...
 
 ## Utilities
 
