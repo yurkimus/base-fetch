@@ -60,32 +60,39 @@ export const request = <T>(
   init?: RequestInit
 ): Promise<readonly [Response, T]> => fetch(info, init).then(parse).then(decide)
 
+export function pipe<First>(
+  first: () => Promise<First>
+): (initial: Promise<any>) => Promise<First>
+
+export function pipe<First, Second>(
+  first: () => Promise<First>,
+  second: () => Promise<Second>
+): (initial: Promise<any>) => Promise<First & Second>
+
+export function pipe<First, Second, Third>(
+  first: () => Promise<First>,
+  second: () => Promise<Second>,
+  third: () => Promise<Third>
+): (initial: Promise<any>) => Promise<First & Second & Third>
+
+export function pipe<First, Second, Third, Fourth>(
+  first: () => Promise<First>,
+  second: () => Promise<Second>,
+  third: () => Promise<Third>,
+  fourth: () => Promise<Fourth>
+): (initial: Promise<any>) => Promise<First & Second & Third & Fourth>
+
 /**
- * @description Function that provides a way to pipe request paramteres down to one request with composed `RequestInit` at final request
+ * @description Function that provides a way to pipe request requests responses down to one promise
  */
-export const pipe =
-  (...pipes: Pipe[]) =>
-  <T>(info: URL, init: RequestInit = {}) => {
-    if (pipes.length < 1) {
-      throw new Error('`...pipes` length is less then 1!')
-    }
-
-    const { headers: initialHeaders, ...initialInit } = init
-
-    const chain = (piped: Promise<PipeParameters>, pipe: Pipe) =>
-      piped.then(parameters => pipe(...parameters))
-
-    const head = pipes[0]!
-    const tail = pipes.slice(1)
-
-    return tail.reduce(chain, head({}, undefined)).then(([init, headers]) =>
-      request<T>(info, {
-        ...initialInit,
-        ...init,
-        headers: new Headers([
-          ...new Headers(initialHeaders),
-          ...new Headers(headers),
-        ]),
-      })
+export function pipe(...pipes: (() => Promise<any>)[]) {
+  const chain = (previous: Promise<any>, next: () => Promise<any>) =>
+    previous.then(composed =>
+      next().then(response => ({
+        ...composed,
+        ...response,
+      }))
     )
-  }
+
+  return (initial: Promise<object>) => pipes.reduce(chain, initial) as any
+}
