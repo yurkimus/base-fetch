@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "base-fetch",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "simple javascript fetch-based wrapper",
   "main": "destination/index.js",
   "types": "destination/index.d.ts",
@@ -15,6 +15,10 @@
   ],
   "author": "Yuri Ignatov <yurkimus@gmail.com>",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yurkimus/base-fetch.git"
+  },
   "devDependencies": {
     "typescript": "^4.9.4"
   }
