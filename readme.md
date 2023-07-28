@@ -1,112 +1,78 @@
-# Fetch-based wrapper!
+# base-fetch
 
-Requires NodeJS v17.5.0 or newer.
+This package is a flexible and customizable tool to handle various types of HTTP requests using fetch. It automatically recognizes MIME types and processes the response accordingly. Use it with ramda to achieve better experience!
 
-[Github repository](https://github.com/yurkimus/base-fetch)
+## Features
+
+- Written in [ramda](https://ramdajs.com/)
+- Can automatically parse the response based on the MIME type.
+- Handles multiple MIME types including text, JSON, and media types.
+- Throws an error when the response status is not okay (200-299).
+- Returns both the response and parsed result.
 
 ## Installation
 
-```
+As this is a JavaScript package, ensure that you have Node.js and npm installed. You can then use npm to install this package. You should have Node.js > 18.x if you want to work with fetch.
+
+```bash
 npm install base-fetch
 ```
 
-## Documentation
+## Importing
 
-If you are using typescript, the following libraries should be provided in your tsconfig file: `"DOM", "DOM.Iterable", "ES2015"`
-
-### [Core](#core-1)
-
-- [`request`](#request)
-
-### [Addon](#addon-1)
-
-- [`pipe`](#pipe)
-
-### [Utilities](#utilities-1)
-
-- [`unwrap`](#unwrap)
-
-You can use dev tools to test following example.
-Do not forget to include `request` function into you environment (browser, node...) and then the rest of the items if needed, such as `unwrap` for example
-
-Example requests can be done at `https://jsonplaceholder.typicode.com`
-
-Use this helper:
-
-```typescript
-const base = new URL('https://jsonplaceholder.typicode.com')
+```javascript
+import { request, takeResponse, takeParsed } from 'base-fetch'
 ```
 
-### Basic usage example in browser or node runtimes
+## Usage
 
-```typescript
-import { request, unwrap } from 'base-fetch'
+The main function exported from this package is request.
 
-const url = new URL('todos', base)
+`request` takes the same arguments as the built-in fetch function, and returns a Promise that resolves to a tuple of `[Response, Result]``. The Result is the parsed response body.
 
-request(url)
-  .then(unwrap)
+Here's an example of how to use it:
+
+```javascript
+request('https://api.github.com/users/octocat')
+  .then(takeParsed)
   .then(console.log)
-  .catch(reason => console.error(reason))
+  .catch(console.error)
 ```
 
-### Providing type information
+In this example, request sends a GET request to the GitHub API to get the user data for 'octocat'. The takeParsed function is used to extract the parsed response body (in this case, it's JSON), which is then logged to the console. Any errors that occur during the process are also logged to the console.
 
-```typescript
-interface Shape {
-  id: number
-}
+## API
 
-request<Shape>(url)
-  .then(unwrap)
-  .then(value => value.id)
-```
+The package also exports two helper functions for handling the result of request:
 
-## Core
+- `takeResponse`: Extracts the Response object from the result of request.
+- `takeParsed`: Extracts the parsed response body from the result of request.
 
-### `request`
+## Contributing
 
-Request from from the given resource.
+If you found a bug or want to propose a feature, feel free to visit the Issues tab and post an issue.
 
-Learn:
+## Examples
 
-- Request (`RequestInfo` and `RequestInit` are typescript definitions)
-  - [at MDN](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)
+### Composing reqeuests
 
-#### example
+```javascript
+import { request, takeParsed } from 'base-fetch'
+import { assoc, __, call, pipeWith, andThen } from 'ramda'
 
-```typescript
-const url = new URL('todos', base)
+const result = { user: null, todo: null }
 
-request('https://jsonplaceholder.typicode.com/todos')
+const getUser = (properties = result) =>
+  request('https://jsonplaceholder.typicode.com/users/1')
+    .then(takeParsed)
+    .then(assoc('user', __, properties))
 
-request(url, { method: 'GET' })
+const getTodo = (properties = result) =>
+  request('https://jsonplaceholder.typicode.com/todos/1')
+    .then(takeParsed)
+    .then(assoc('todo', __, properties))
 
-request(url, { method: 'POST', body: JSON.stringify({}) })
-
-request(url, { method: 'PUT', body: new FormData() })
-
-request(url, { method: 'DELETE', signal: new AbortController().signal })
-
-request(url, { method: 'PATCH', credentials: 'include' })
-```
-
-## Addon
-
-### `pipe`
-
-Will be written...
-
-## Utilities
-
-### `unwrap`
-
-Simple functions taht provides a little bit more cleaner syntax when working with request's return value
-
-#### example
-
-```typescript
-request(url)
-  .then(unwrap)
-  .then(value => value)
+call(pipeWith(andThen)([getUser, getTodo]))
+  .then(console.log) // logs { user: ..., todo: ... }
+  .catch(console.error)
 ```
