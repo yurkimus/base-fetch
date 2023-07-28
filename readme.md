@@ -54,7 +54,7 @@ If you found a bug or want to propose a feature, feel free to visit the Issues t
 
 ## Examples
 
-### Composing reqeuests
+### Composing requests
 
 ```javascript
 import { request, takeParsed } from 'base-fetch'
