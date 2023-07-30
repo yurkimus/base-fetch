@@ -43,10 +43,28 @@ In this example, request sends a GET request to the GitHub API to get the user d
 
 ## API
 
-The package also exports two helper functions for handling the result of request:
+The package provides several functions for handling HTTP requests and responses:
 
-- `takeResponse`: Extracts the Response object from the result of request.
-- `takeParsed`: Extracts the parsed response body from the result of request.
+- `request`: A function that abstracts the fetch API, handling the parsing of responses based on their MIME types. It takes the same parameters as the fetch function, returning a promise of a tuple containing the Response object and the parsed response body.
+
+- `registerMimeTypes`: A function for extending or overriding the default MIME type configuration used by the request function.
+
+  Example:
+
+  ```javascript
+  import { registerMimeTypes } from 'base-fetch'
+
+  registerMimeTypes({
+    text: ['application/custom-text'],
+    json: ['application/custom-json'],
+    blob: ['application/custom-blob'],
+    formData: ['multipart/custom-form-data'],
+  })
+  ```
+
+- `takeResponse`: A function for extracting the Response object from the result of the request function.
+
+- `takeParsed`: A function for extracting the parsed response body from the result of the request function.
 
 ## Contributing
 
