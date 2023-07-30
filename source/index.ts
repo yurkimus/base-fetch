@@ -64,8 +64,7 @@ export const registerMimeTypes = once((configuration: typeof mimeTypes) => {
       text: union(text),
       json: union(json),
       blob: union(blob),
-      formData: union([] as string[]),
-      arrayBuffer: union([] as string[]),
+      formData: union(formData),
     },
     configuration
   )
