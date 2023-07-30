@@ -28,7 +28,7 @@ import { request, takeResponse, takeParsed } from 'base-fetch'
 
 The main function exported from this package is request.
 
-`request` takes the same arguments as the built-in fetch function, and returns a Promise that resolves to a tuple of `[Response, Result]``. The Result is the parsed response body.
+`request` takes the same arguments as the built-in fetch function, and returns a Promise that resolves to a tuple of `[Response, Result]`. The Result is the parsed response body.
 
 Here's an example of how to use it:
 
