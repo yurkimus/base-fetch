@@ -12,11 +12,11 @@ import {
   pathEq,
   pipe,
   prop,
-  evolve,
   split,
-  union,
   once,
   unless,
+  mergeWith,
+  concat,
 } from 'ramda'
 
 const text = [
@@ -58,17 +58,11 @@ let mimeTypes = {
   formData,
 } as const
 
-export const registerMimeTypes = once((configuration: typeof mimeTypes) => {
-  mimeTypes = evolve(
-    {
-      text: union(text),
-      json: union(json),
-      blob: union(blob),
-      formData: union(formData),
-    },
-    configuration
-  )
-})
+export const registerMimeTypes = once(
+  (configuration: Partial<typeof mimeTypes>) => {
+    mimeTypes = mergeWith(concat)(configuration, mimeTypes)
+  }
+)
 
 const raise = (error: any) => {
   throw error
@@ -97,16 +91,23 @@ export const takeResponse = <Result extends any>(result: [Response, Result]) =>
 export const takeParsed = <Result extends any>(result: [Response, Result]) =>
   result[1]
 
+const mimeCond = (
+  type: keyof typeof mimeTypes
+): [ReturnType<typeof isMime>, ReturnType<typeof clone>] => [
+  isMime(mimeTypes[type]),
+  clone(invoker(0, type)),
+]
+
 export const request = <Result extends unknown>(
   ...args: Parameters<typeof fetch>
 ): Promise<[Response, Result]> =>
   fetch(...args)
     .then(
       cond([
-        [isMime(mimeTypes.text), clone(invoker(0, 'text'))],
-        [isMime(mimeTypes.json), clone(invoker(0, 'json'))],
-        [isMime(mimeTypes.blob), clone(invoker(0, 'blob'))],
-        [isMime(mimeTypes.formData), clone(invoker(0, 'formData'))],
+        mimeCond('text'),
+        mimeCond('json'),
+        mimeCond('blob'),
+        mimeCond('formData'),
         [T, clone(always(null))],
       ])
     )
